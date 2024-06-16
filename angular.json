@@ -22,6 +22,14 @@
               {
                 "glob": "**/*",
                 "input": "public"
+              },
+              {
+                "glob": "manifest.json",
+                "input": "src/"
+              },
+              {
+                "glob": "background.js",
+                "input": "src/"
               }
             ],
             "styles": ["src/styles.css"],
@@ -46,7 +54,7 @@
                   "maximumError": "4kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "none"
             },
             "development": {
               "optimization": false,
