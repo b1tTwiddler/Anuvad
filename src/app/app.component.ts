@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { initFlowbite } from 'flowbite';
+import { ImageSliderComponent } from './components/image-slider/image-slider.component';
 
 @Component({
-  selector: 'app-root',
+  selector: 'av-root',
   standalone: true,
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, ImageSliderComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
