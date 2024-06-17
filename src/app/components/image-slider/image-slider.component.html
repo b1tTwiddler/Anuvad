@@ -8,9 +8,12 @@
     <!-- Items -->
     @for (image of images; track image) {
     <div class="hidden duration-700 ease-in-out" data-carousel-item>
-      <img src="{{image}}"
+      <!-- <img src="{{image}}"
         class="absolute block object-contain h-full w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
-        alt="Manga Image" width="1266" height="800">
+        alt="Manga Image" width="1266" height="800"> -->
+      <canvas [id]="'image-'+image"
+        class="absolute block object-contain h-full w-full -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2"
+        alt="Manga Image"></canvas>
     </div>
     }
   </div>
@@ -42,6 +45,6 @@
 </div>
 
 <div class="flex justify-center">
-  <button type="button"
+  <button type="button" (click)="handleTranslate()"
     class="text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:bg-gradient-to-l focus:ring-4 focus:outline-none focus:ring-purple-200 dark:focus:ring-purple-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2 mt-2">Translate</button>
 </div>
