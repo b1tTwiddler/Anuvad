@@ -1,4 +1,5 @@
 import { Component, OnInit, signal } from '@angular/core';
+import { translate } from '../../../utils/ocr';
 
 @Component({
   selector: 'av-image-slider',
@@ -48,7 +49,7 @@ export class ImageSliderComponent implements OnInit {
       // Set canvas dimensions based on image size (optional)
       canvasElement.width = imageWidth;
       canvasElement.height = imageHeight;
-      console.log(imageWidth, imageHeight);
+      // console.log(imageWidth, imageHeight);
 
       // Draw the image onto the canvas
       ctx?.drawImage(image, 0, 0);
@@ -64,12 +65,84 @@ export class ImageSliderComponent implements OnInit {
     image.src = imageUrl;
   }
 
-  handleTranslate() {
+  async handleTranslate() {
     let currentCanvasElement = document.getElementById(
       `image-${this.images[this.currentImageIndex()]}`
     ) as HTMLCanvasElement;
-    this.drawTextFit(currentCanvasElement, 20, 80, 200, 150, 'Ei bro Whats up');
+    // this.drawTextFit(currentCanvasElement, 20, 80, 200, 150, 'Ei bro Whats up');
+
+    // let currentImageElement = document.getElementById(
+    //   `image-${this.images[this.currentImageIndex()]}`
+    // ) as HTMLImageElement;
+    let imgBlob = await this.getImageBlob(
+      this.images[this.currentImageIndex()]
+    );
+    let data = await translate(imgBlob as Blob);
+
+    const ctx = currentCanvasElement.getContext(
+      '2d'
+    ) as CanvasRenderingContext2D;
+    ctx.strokeStyle = 'red'; // Set stroke color for bounding boxes
+    ctx.lineWidth = 2;
+    // for blocks
+    // for (const block of data.blocks || []) {
+    //   // const { x0, y0, x1, y1 } = block.baseline;
+    //   const { x0, y0, x1, y1 } = block.bbox;
+    //   ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    // }
+
+    //for lines
+    for (const block of data.lines || []) {
+      // if (block.confidence < 40) {
+      //   continue;
+      // }
+      // const { x0, y0, x1, y1 } = block.baseline;
+      const { x0, y0, x1, y1 } = block.bbox;
+      ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    }
+
+    // for paragraphs
+    // for (const block of data.paragraphs || []) {
+    //   // const { x0, y0, x1, y1 } = block.baseline;
+    //   const { x0, y0, x1, y1 } = block.bbox;
+    //   ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    // }
+
+    //for symbols
+    // for (const block of data.symbols || []) {
+    //   // const { x0, y0, x1, y1 } = block.baseline;
+    //   const { x0, y0, x1, y1 } = block.bbox;
+    //   ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    // }
+
+    // for words
+    // for (const block of data.words || []) {
+    //   // const { x0, y0, x1, y1 } = block.baseline;
+    //   const { x0, y0, x1, y1 } = block.bbox;
+    //   if (block.confidence < 50) {
+    //     continue;
+    //   }
+    //   ctx.strokeRect(x0, y0, x1 - x0, y1 - y0);
+    // }
   }
+
+  drawBoundingBoxes(canvasElement: HTMLCanvasElement) {
+    const ctx = canvasElement.getContext('2d');
+  }
+
+  getImageBlob = async (imageUrl: string): Promise<Blob | undefined> => {
+    try {
+      const response = await fetch(imageUrl);
+      if (!response.ok) {
+        throw new Error(`Error fetching image: ${response.statusText}`);
+      }
+      const blob = await response.blob();
+      return blob;
+    } catch (error) {
+      console.error('Error fetching image:', error);
+      return undefined;
+    }
+  };
 
   drawTextFit(
     canvas: HTMLCanvasElement,
